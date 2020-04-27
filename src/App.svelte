@@ -6,11 +6,13 @@
 
 	let currentState = false;
 	let score = 0;
+	let scoreOne = 0;
+	let scoreTwo = 0;
 	let round = 0;
-  const maxRound = 10;
+  	const maxRound = 20;
 	let response = false;
 	const maxTimer = 5;
-  let timerActivated = true;
+  	let timerActivated = true;
 	let timerStatus = maxTimer;
 	let timerInterval = null;
 	let showTimeElapsedAlert = false;
@@ -89,6 +91,8 @@
 	
 	let updateGameStatus = function(e) {
 		score = e.detail.score;
+		scoreOne = e.detail.scoreOne;
+		scoreTwo = e.detail.scoreTwo;
 		round = e.detail.round;
 		response = e.detail.response;
 		showResponse = true;
@@ -129,24 +133,21 @@
 			class="final-score"
 			in:fly="{{ y: 20, duration: 300 }}" 
   			out:fly="{{ y: 20, duration: 150 }}">
-				{#if score == maxRound }
-					<h2>Félicitations !</h2>
-					<h2>Votre score est de : <strong>{score}/{maxRound}</strong></h2>
-				{:else}
-					{#if score > (maxRound/2) && score < maxRound }
-						<h2>Bravo !</h2>
-						<h2>Votre score est de : <strong>{score}/{maxRound}</strong></h2>
+				{#if scoreOne > scoreTwo}
+					<h2>Joueur 1 gagne !</h2>
+					<h2>Votre score est de : <strong>{scoreOne}/{maxRound}</strong></h2>
+					<h2>Le score du joueur 2 est de : <strong>{scoreTwo}/{maxRound}</strong></h2>
 					{:else}
-						<h2>:(</h2>
-						<h2>Votre score est de : <strong>{score}/{maxRound}</strong></h2>
-						<h2>Vous ferez mieux la prochaine fois ;)</h2>
-					{/if}
+						<h2>Joueur 2 gagne !</h2>
+						<h2>Votre score est de : <strong>{scoreTwo}/{maxRound}</strong></h2>
+						<h2>Le score du joueur 1 est de : <strong>{scoreOne}/{maxRound}</strong></h2>
 				{/if}
 		</div>
 	{/if}
 
 	{#if !currentState}
-		<p>Appuyez sur ENTER pour démarrer le jeu,<br>ensuite utilisez les touches A, Z, E, R pour choisir la bonne couleur.</p>
+		<p>Appuyez sur ENTER pour démarrer le jeu,</p>
+		<p>ensuite utilisez les touches :<br> <strong>A, Z, E, R (joueur 1)</strong><br><strong>U, I, O, P (joueur 2)</strong><br>pour choisir la bonne couleur.</p>
 	{/if}
 
 	{#if showResponse}
@@ -175,7 +176,8 @@
 					<div class="status">
 						<span class="score"
 							on:colorBlockClicked={updateGameStatus}>
-							Score : <strong>{score}</strong>
+							Score joueur 1 : <strong>{scoreOne}</strong> / 
+							Score joueur 2 : <strong>{scoreTwo}</strong> / 
 						</span>
 						/ Partie : <strong>{round}</strong>
 						/ Temps restant : <strong>{timerStatus}</strong>
@@ -186,9 +188,12 @@
 
 	{#if currentState}
 		<div transition:fade>
+			{scoreOne} / {scoreTwo}
 			<Board
 				{colors}
 				{score}
+				{scoreOne}
+				{scoreTwo}
 				{round}
 				on:colorBlockClicked={updateGameStatus}
 			/>
