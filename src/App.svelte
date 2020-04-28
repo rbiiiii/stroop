@@ -135,12 +135,20 @@
   			out:fly="{{ y: 20, duration: 150 }}">
 				{#if scoreOne > scoreTwo}
 					<h2>Joueur 1 gagne !</h2>
-					<h2>Votre score est de : <strong>{scoreOne}/{maxRound}</strong></h2>
-					<h2>Le score du joueur 2 est de : <strong>{scoreTwo}/{maxRound}</strong></h2>
+					<h2>Votre score est de : <strong>{scoreOne}</strong></h2>
+					<h2>Le score du joueur 2 est de : <strong>{scoreTwo}</strong></h2>
 					{:else}
-						<h2>Joueur 2 gagne !</h2>
-						<h2>Votre score est de : <strong>{scoreTwo}/{maxRound}</strong></h2>
-						<h2>Le score du joueur 1 est de : <strong>{scoreOne}/{maxRound}</strong></h2>
+					{#if scoreOne == scoreTwo}
+						<h2>Egalité !</h2>
+						<h2>Le score du joueur 1 est de : <strong>{scoreOne}</strong></h2>
+						<h2>Le score du joueur 2 est de : <strong>{scoreTwo}</strong></h2>
+					{:else}
+						{#if scoreOne < scoreTwo}
+							<h2>Joueur 2 gagne !</h2>
+							<h2>Votre score est de : <strong>{scoreTwo}</strong></h2>
+							<h2>Le score du joueur 1 est de : <strong>{scoreOne}</strong></h2>
+						{/if}
+					{/if}
 				{/if}
 		</div>
 	{/if}
@@ -176,10 +184,11 @@
 					<div class="status">
 						<span class="score"
 							on:colorBlockClicked={updateGameStatus}>
-							Score joueur 1 : <strong>{scoreOne}</strong> / 
-							Score joueur 2 : <strong>{scoreTwo}</strong> / 
-						</span>
-						/ Partie : <strong>{round}</strong>
+							Score :<br>
+							joueur 1 : <strong>{scoreOne}</strong> / 
+							joueur 2 : <strong>{scoreTwo}</strong>
+						</span><br><br>
+						Partie : <strong>{round}</strong>
 						/ Temps restant : <strong>{timerStatus}</strong>
 					</div>
 			</div>
@@ -188,7 +197,6 @@
 
 	{#if currentState}
 		<div transition:fade>
-			{scoreOne} / {scoreTwo}
 			<Board
 				{colors}
 				{score}
