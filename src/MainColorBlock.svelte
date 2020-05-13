@@ -1,4 +1,6 @@
 <script>
+import {fly} from "svelte/transition";
+
 export let randomColors;
 
 let getRandomNum = (arr) => {
@@ -13,18 +15,25 @@ $: document.documentElement.style.setProperty('--colorcode', randomColorCode);
 
 <div 
     id="main-color-block"
-    data-colorcode="{randomColorCode}">
+    data-colorcode="{randomColorCode}"
+    in:fly="{{ y: 20, duration: 300 }}" 
+  	out:fly="{{ y: 20, duration: 150 }}">
         {randomColorTxt}
 </div>
 
 <style>
     div {
         display:inline-block;
-        margin:5vh auto;
-        padding:0.5em 1em;
-        border:1px solid;
-        background-color:var(--colorcode);
-        color:white;
-        font-size: 1.25rem;
+        margin:90px auto 0 auto;
+        font-size: 8rem;
+        color:var(--colorcode);
+        text-transform: uppercase;
+        font-weight: bold;
+        letter-spacing:0.1em;
+        backdrop-filter: blur(5px);
+        padding:0.25em;
+        border-radius: 50%;
+        line-height: 1;
+        -webkit-text-stroke: 1px rgba(0,0,0,0.8);
     }
 </style>

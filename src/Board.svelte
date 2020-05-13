@@ -3,83 +3,81 @@
     import ColorBlock from "./ColorBlock.svelte";
     import { createEventDispatcher } from 'svelte';
 
-    export let score;
     export let scoreOne;
     export let scoreTwo;
     export let colors;
     export let round;
+    export let canTrigger;
 
     const dispatch = createEventDispatcher();
+    const keyCodesOne = [65, 90, 69, 82] // A, Z, E, R
+    const keyCodesTwo = [85, 73, 79, 80] // U, I, O, P
+    const keyCodes = keyCodesOne.concat(keyCodesTwo);
+    const buttonSound = new Audio('./mp3/button-clicked.mp3');
 
     $: randomColors = colors.slice(0, 4);
+    $: randomColorsOne = shuffleArray(randomColors);
+    $: randomColorsTwo = colors.slice(0, 4);
+
+    let shuffleArray = (array) => {
+		for (let i = array.length - 1; i > 0; i--) {
+			const j = Math.floor(Math.random() * (i + 1));
+			[array[i], array[j]] = [array[j], array[i]];
+		}
+		return array;
+    }
 
     let handleKeydown = (e) => {
-        checkColorBlock(e.keyCode);
+        let keyCode = e.keyCode;
+
+        if (canTrigger) {
+            if (keyCodes.includes(keyCode)) {
+                buttonSound.pause();
+                buttonSound.currentTime = 0;
+                buttonSound.play();
+                checkColorBlock(keyCode);
+            }
+        }
     }
 
     let checkColorBlock = (keyCode) => {
-        
+        canTrigger = false;
+
         let currentColor = document.getElementById("main-color-block").dataset.colorcode;
         let btnColor = '';
         let response = false;
         let player = null;
-        
-        // A
-        if (keyCode == 65) {
-            btnColor = randomColors[0].code;
-            player = 1;
-        }
-        // Z
-        else if (keyCode == 90) {
-            btnColor = randomColors[1].code;
-            player = 1;
-        }
-        // E
-        else if (keyCode == 69) {
-            btnColor = randomColors[2].code;
-            player = 1;
-        }
-        // R
-        else if (keyCode == 82) {
-            btnColor = randomColors[3].code;
-            player = 1;
-        }
-        // U
-        else if (keyCode == 85) {
-            btnColor = randomColors[0].code;
-            player = 2;
-        }
-        // I
-        else if (keyCode == 73) {
-            btnColor = randomColors[0].code;
-            player = 2;
-        }
-        // O
-        else if (keyCode == 79) {
-            btnColor = randomColors[0].code;
-            player = 2;
-        }
-        // P
-        else if (keyCode == 80) {
-            btnColor = randomColors[0].code;
-            player = 2;
-        }
+
+        for (let i = 0; i < keyCodesOne.length; i++) {
+            if (keyCode == keyCodesOne[i]) {
+                btnColor = randomColorsOne[i].code;
+                player = 1; 
+                /* let btnPressed = document.querySelector('button:nth-of-type('+(i+1)+')');
+                btnPressed.focus(); */
+            }
+        };
+
+        for (let i = 0; i < keyCodesTwo.length; i++) {
+            if (keyCode == keyCodesTwo[i]) {
+                btnColor = randomColorsTwo[i].code;
+                player = 2;
+            }
+        };
 
         let dispatchResponse = () => {
             if (currentColor == btnColor) {
-                score += 1;
                 if (player == 1) {scoreOne += 1}
                 if (player == 2) {scoreTwo += 1}
                 response = true;
             }
 
             dispatch('colorBlockClicked', {
-                score: score,
                 round: round + 1,
                 response: response,
                 player: player,
                 scoreOne : scoreOne,
-                scoreTwo : scoreTwo
+                scoreTwo : scoreTwo,
+                canTrigger : canTrigger
             });
         }
 
@@ -93,20 +91,41 @@
     <MainColorBlock
         {randomColors}
     />
-    <div class="colors-blocks">
-        <h3>Joueur 1</h3>
-        {#each randomColors as color, index (color.id)}
-            <ColorBlock
-                {color}
-            />
-        {/each}
-    </div>
-    <div class="colors-blocks">
-        <h3>Joueur 2</h3>
-        {#each randomColors as color, index (color.id)}
-            <ColorBlock
-                {color}
-            />
-        {/each}
+    <div class="color-blocks-container">
+        <div class="color-blocks">
+            <h3>Joueur 1</h3>
+            {#each randomColorsOne as color, index (color.id)}
+                <ColorBlock
+                    {color}
+                />
+            {/each}
+        </div>
+        <div class="color-blocks">
+            <h3>Joueur 2</h3>
+            {#each randomColorsTwo as color, index (color.id)}
+                <ColorBlock
+                    {color}
+                />
+            {/each}
+        </div>
     </div>
 </div>
+
+<style>
+    .board {
+        margin-top:140px;
+    }
+    h3 {
+        font-size: 2.4rem;
+        color:white;
+    }
+    .color-blocks-container {
+        display:flex;
+        justify-content: space-between;
+        width:90vw;
+        margin: 60px auto 0 auto;
+    }
+    .color-blocks {
+        margin:0;
+    }
+</style>
