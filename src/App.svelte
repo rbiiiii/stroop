@@ -87,7 +87,7 @@
 		timerFontSize += 1.5;
 		explosionSound.pause();
 		explosionSound.currentTime = 0;
-		if (timerStatus == 0) {
+		if (timerStatus == 0 && canTrigger) {
 			explosionSound.play();
 			timeElapsed();
 		} else {
