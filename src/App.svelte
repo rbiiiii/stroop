@@ -13,7 +13,7 @@
 	let response = false;
 	let key = '';
 	let keyCode = '';
-  	let timerActivated = false;
+  	let timerActivated = true;
 	let timerStatus = maxTimer;
 	let timerInterval = null;
 	let timerFontSize = 3;
