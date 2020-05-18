@@ -24,15 +24,15 @@ $: document.documentElement.style.setProperty('--colorcode', randomColorCode);
 <style>
     div {
         display:inline-block;
-        margin:90px auto 0 auto;
-        font-size: 8rem;
+        margin:80px auto 0;
+        font-size: 18rem;
         color:var(--colorcode);
         text-transform: uppercase;
         font-weight: bold;
         letter-spacing:0.1em;
-        backdrop-filter: blur(5px);
-        padding:0.25em;
-        border-radius: 50%;
+        backdrop-filter: blur(3px);
+        padding:0.1em;
+        border-radius: 5px;
         line-height: 1;
         -webkit-text-stroke: 1px rgba(0,0,0,0.8);
     }

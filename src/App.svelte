@@ -5,27 +5,41 @@
 	export let colors;
 
 	let currentState = false;
+	let canTrigger = false;
 	let scoreOne = 0;
 	let scoreTwo = 0;
 	let round = 0;
   	const maxRound = 20;
 	let response = false;
-	const maxTimer = 5;
-	let canTrigger = false;
-  	let timerActivated = true;
+	let key = '';
+	let keyCode = '';
+  	let timerActivated = false;
 	let timerStatus = maxTimer;
 	let timerInterval = null;
 	let timerFontSize = 3;
+	const maxTimer = 5;
 	let showTimeElapsedAlert = false;
 	let showFinalScore = false;
 	let showResponse = false;
-	let key = '';
-	let keyCode = '';
+	const body = document.body;
 	const bipSound = new Audio('./mp3/beep-07.mp3');
 	const explosionSound = new Audio('./mp3/explosion-01.mp3');
 	const victorySound = new Audio('./mp3/victory-sound-effect-hd.mp3');
 
 	$: document.documentElement.style.setProperty('--timerFontSize', timerFontSize + 'rem');
+
+	
+	const openFullscreen = (dom) => {
+		if (dom.requestFullscreen) {
+			dom.requestFullscreen();
+		} else if (dom.mozRequestFullScreen) { /* Firefox */
+			dom.mozRequestFullScreen();
+		} else if (dom.webkitRequestFullscreen) { /* Chrome, Safari and Opera */
+			dom.webkitRequestFullscreen();
+		} else if (dom.msRequestFullscreen) { /* IE/Edge */
+			dom.msRequestFullscreen();
+		}
+	}
 	
 	let shuffleArray = (array) => {
 		for (let i = array.length - 1; i > 0; i--) {
@@ -43,6 +57,7 @@
 		scoreOne = 0;
 		scoreTwo = 0;
 		timerFontSize = 2;
+		openFullscreen(body);
         if (!currentState) {
             currentState = true;
 			round +=1;
@@ -162,8 +177,7 @@
 	{#if showFinalScore}
 		<div
 			class="final-score"
-			in:fly="{{ y: 20, duration: 300 }}" 
-  			out:fly="{{ y: 20, duration: 1 }}">
+			in:fly="{{ y: 20, duration: 300 }}">
 				{#if scoreOne > scoreTwo}
 					<h2>Joueur 1 gagne !</h2>
 					<h2>Score final : <strong>{scoreOne} - {scoreTwo}</strong></h2>
@@ -201,21 +215,20 @@
 		</div>
 	{/if}
 
-  {#if showTimeElapsedAlert}
-    <div class="show-time-elapsed game-alert">
-      <div
-        in:fly="{{ y: 40, duration: 300 }}" 
-          out:fly="{{ y: 40, duration: 150 }}">
-          <p>Dommage,<br>votre temps est écoulé !</p>
-      </div>
-    </div>
-  {/if}
+	{#if showTimeElapsedAlert}
+	<div class="show-time-elapsed game-alert">
+		<div
+		in:fly="{{ y: 40, duration: 300 }}" 
+			out:fly="{{ y: 40, duration: 150 }}">
+			<p>Dommage,<br>votre temps est écoulé !</p>
+		</div>
+	</div>
+	{/if}
 	
 	{#if currentState}
 		<div class="game-status"
 		in:fly="{{ y: 20, duration: 300 }}">
-			<div class="score"
-				on:colorBlockClicked={updateGameStatus}>
+			<div class="score">
 				Score : <strong>{scoreOne}</strong> - <strong>{scoreTwo}</strong><br>
 			</div>
 			<div class="timer">
@@ -225,9 +238,6 @@
 				Partie : <strong>{round} / {maxRound}</strong><br>
 			</div>
 		</div>
-	{/if}
-
-	{#if currentState}
 		<div transition:fade>
 			<Board
 				{colors}
@@ -312,7 +322,7 @@
 	}
 	h1 img {
 		display:block;
-		width:400px;
+		width:490px;
 		height:auto;
 		margin:10px auto;
 	}
