@@ -3,7 +3,7 @@ import {fly} from "svelte/transition";
 
 export let randomColors;
 
-let getRandomNum = (arr) => {
+const getRandomNum = (arr) => {
     return Math.floor(Math.random() * arr.length);
 }
 
@@ -24,7 +24,7 @@ $: document.documentElement.style.setProperty('--colorcode', randomColorCode);
 <style>
     div {
         display:inline-block;
-        margin:80px auto 0;
+        margin:0 auto;
         font-size: 18rem;
         color:var(--colorcode);
         text-transform: uppercase;

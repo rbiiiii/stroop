@@ -14,10 +14,11 @@
 	let key = '';
 	let keyCode = '';
   	let timerActivated = true;
-	let timerStatus = maxTimer;
+	const timerMaxTime = 5;
+	let timerStatus = timerMaxTime;
 	let timerInterval = null;
-	let timerFontSize = 3;
-	const maxTimer = 5;
+	const timerInitialFontSize = 3;
+	let timerFontSize = timerInitialFontSize;
 	let showTimeElapsedAlert = false;
 	let showFinalScore = false;
 	let showResponse = false;
@@ -27,7 +28,6 @@
 	const victorySound = new Audio('./mp3/victory-sound-effect-hd.mp3');
 
 	$: document.documentElement.style.setProperty('--timerFontSize', timerFontSize + 'rem');
-
 	
 	const openFullscreen = (dom) => {
 		if (dom.requestFullscreen) {
@@ -41,7 +41,7 @@
 		}
 	}
 	
-	let shuffleArray = (array) => {
+	const shuffleArray = (array) => {
 		for (let i = array.length - 1; i > 0; i--) {
 			const j = Math.floor(Math.random() * (i + 1));
 			[array[i], array[j]] = [array[j], array[i]];
@@ -49,14 +49,14 @@
 		return array;
 	}
 
-    let startGame = () => {
+    const startGame = () => {
 		canTrigger = true;
 		victorySound.pause();
 		victorySound.currentTime = 0;
 		round = 0;
 		scoreOne = 0;
 		scoreTwo = 0;
-		timerFontSize = 2;
+		timerFontSize = timerInitialFontSize;
 		openFullscreen(body);
         if (!currentState) {
             currentState = true;
@@ -69,11 +69,11 @@
 		}
 	}
 
-	let restartGame = () => {
+	const restartGame = () => {
 		showFinalScore = false;
 		colors = shuffleArray(colors);
-		timerStatus = maxTimer;
-		timerFontSize = 2;
+		timerStatus = timerMaxTime;
+		timerFontSize = timerInitialFontSize;
 		window.clearInterval(timerInterval);
 		if (currentState) {
 			showFinalScore = false;
@@ -81,7 +81,7 @@
 		}
 	}
 
-	let timeElapsed = () => {
+	const timeElapsed = () => {
 		canTrigger = false;
 		showTimeElapsedAlert = true;
 		window.clearInterval(timerInterval);
@@ -97,7 +97,7 @@
 		}, 700);
 	}
 
-	let updateTimer = () => {
+	const updateTimer = () => {
 		timerStatus -= 1;
 		timerFontSize += 1.5;
 		explosionSound.pause();
@@ -110,21 +110,21 @@
 		}
 	}
 
-	let gamefinished = () => {
+	const gamefinished = () => {
 		victorySound.play();
 		window.clearInterval(timerInterval);
 		showFinalScore = true;
 		currentState = false;
 	}
 	
-	let updateGameStatus = function(e) {
+	const updateGameStatus = function(e) {
 		scoreOne = e.detail.scoreOne;
 		scoreTwo = e.detail.scoreTwo;
 		round = e.detail.round;
 		response = e.detail.response;
 		canTrigger = e.canTrigger;
 		showResponse = true;
-		timerFontSize = 2;
+		timerFontSize = timerInitialFontSize;
 
 		if (round > maxRound) {
 			showResponse = false;
@@ -138,7 +138,7 @@
 		}
 	}
 
-	function handleKeydown(e) {
+	const handleKeydown = (e) => {
 		key = e.key;
 		keyCode = e.keyCode;
 
@@ -218,7 +218,7 @@
 	{#if showTimeElapsedAlert}
 	<div class="show-time-elapsed game-alert">
 		<div
-		in:fly="{{ y: 40, duration: 300 }}" 
+			in:fly="{{ y: 40, duration: 300 }}" 
 			out:fly="{{ y: 40, duration: 150 }}">
 			<p>Dommage,<br>votre temps est écoulé !</p>
 		</div>
@@ -227,15 +227,16 @@
 	
 	{#if currentState}
 		<div class="game-status"
-		in:fly="{{ y: 20, duration: 300 }}">
+		in:fly="{{ y: 20, duration: 300 }}" 
+		out:fly="{{ y: 0, duration: 0 }}">
 			<div class="score">
-				Score : <strong>{scoreOne}</strong> - <strong>{scoreTwo}</strong><br>
+				Score<br><strong>{scoreOne}</strong> - <strong>{scoreTwo}</strong><br>
 			</div>
 			<div class="timer">
 				Temps restant<br><strong class="timer-status">{timerStatus}</strong>	
 			</div>
 			<div class="round">
-				Partie : <strong>{round} / {maxRound}</strong><br>
+				Partie<br><strong>{round} / {maxRound}</strong><br>
 			</div>
 		</div>
 		<div transition:fade>
@@ -245,6 +246,7 @@
 				{scoreTwo}
 				{round}
 				{canTrigger}
+				{shuffleArray}
 				on:colorBlockClicked={updateGameStatus}
 			/>
 		</div>
@@ -338,7 +340,7 @@
 		justify-content: space-between;
 		width:100%;
 		margin-top:20px;
-		font-size: 2rem;
+		font-size: 3rem;
 	}
 	.timer-status {
 		position:absolute;
@@ -391,6 +393,12 @@
 		border-radius:3px;
 		margin:2px 3px;
 		padding:1px 5px;
+	}
+
+	@keyframes scoreUp{
+		0%   { transform:scale(1); }
+		70%  { transform:scale(1.3); }
+		100% { transform:translateY(0px); }
 	}
 
 	@keyframes letter-anim {

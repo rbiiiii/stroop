@@ -8,6 +8,7 @@
     export let colors;
     export let round;
     export let canTrigger;
+    export let shuffleArray;
 
     const dispatch = createEventDispatcher();
     const keyCodesOne = [65, 90, 69, 82] // A, Z, E, R
@@ -19,15 +20,7 @@
     $: randomColorsOne = shuffleArray(randomColors);
     $: randomColorsTwo = colors.slice(0, 4);
 
-    let shuffleArray = (array) => {
-		for (let i = array.length - 1; i > 0; i--) {
-			const j = Math.floor(Math.random() * (i + 1));
-			[array[i], array[j]] = [array[j], array[i]];
-		}
-		return array;
-    }
-
-    let handleKeydown = (e) => {
+    const handleKeydown = (e) => {
         let keyCode = e.keyCode;
 
         if (canTrigger) {
@@ -40,7 +33,7 @@
         }
     }
 
-    let checkColorBlock = (keyCode) => {
+    const checkColorBlock = (keyCode) => {
         canTrigger = false;
 
         let currentColor = document.getElementById("main-color-block").dataset.colorcode;
