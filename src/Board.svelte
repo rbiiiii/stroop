@@ -14,7 +14,8 @@
     const keyCodesOne = [65, 90, 69, 82] // A, Z, E, R
     const keyCodesTwo = [85, 73, 79, 80] // U, I, O, P
     const keyCodes = keyCodesOne.concat(keyCodesTwo);
-    const buttonSound = new Audio('./mp3/button-clicked.mp3');
+    let soundPositive = new Audio('./mp3/response-positive.mp3');
+    let soundNegative = new Audio('./mp3/response-negative.mp3');
 
     $: randomColors = colors.slice(0, 4);
     $: randomColorsOne = shuffleArray(randomColors);
@@ -23,14 +24,19 @@
     const handleKeydown = (e) => {
         let keyCode = e.keyCode;
 
-        if (canTrigger) {
-            if (keyCodes.includes(keyCode)) {
-                buttonSound.pause();
-                buttonSound.currentTime = 0;
-                buttonSound.play();
-                checkColorBlock(keyCode);
-            }
+        if (canTrigger && keyCodes.includes(keyCode)) {
+            checkColorBlock(keyCode);
         }
+    }
+
+    const soundResponse = (check) => {
+        let sound = soundPositive;
+        if (!check) {
+            sound = soundNegative;
+        }
+        sound.pause();
+        sound.currentTime = 0;
+        sound.play();
     }
 
     const checkColorBlock = (keyCode) => {
@@ -44,9 +50,7 @@
         for (let i = 0; i < keyCodesOne.length; i++) {
             if (keyCode == keyCodesOne[i]) {
                 btnColor = randomColorsOne[i].code;
-                player = 1; 
-                /* let btnPressed = document.querySelector('button:nth-of-type('+(i+1)+')');
-                btnPressed.focus(); */
+                player = 1;
             }
         };
 
@@ -63,7 +67,7 @@
                 if (player == 2) {scoreTwo += 1}
                 response = true;
             }
-
+            soundResponse(response);
             dispatch('colorBlockClicked', {
                 round: round + 1,
                 response: response,

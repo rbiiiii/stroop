@@ -14,7 +14,7 @@
 	let key = '';
 	let keyCode = '';
   	let timerActivated = true;
-	const timerMaxTime = 5;
+	const timerMaxTime = 4;
 	let timerStatus = timerMaxTime;
 	let timerInterval = null;
 	const timerInitialFontSize = 3;
@@ -23,9 +23,9 @@
 	let showFinalScore = false;
 	let showResponse = false;
 	const body = document.body;
-	const bipSound = new Audio('./mp3/beep-07.mp3');
-	const explosionSound = new Audio('./mp3/explosion-01.mp3');
-	const victorySound = new Audio('./mp3/victory-sound-effect-hd.mp3');
+	const soundBip = new Audio('./mp3/beep.mp3');
+	const soundTimeElapsed = new Audio('./mp3/time-elapsed.mp3');
+	const soundEndGame = new Audio('./mp3/end-game.mp3');
 
 	$: document.documentElement.style.setProperty('--timerFontSize', timerFontSize + 'rem');
 	
@@ -51,8 +51,8 @@
 
     const startGame = () => {
 		canTrigger = true;
-		victorySound.pause();
-		victorySound.currentTime = 0;
+		soundEndGame.pause();
+		soundEndGame.currentTime = 0;
 		round = 0;
 		scoreOne = 0;
 		scoreTwo = 0;
@@ -100,18 +100,18 @@
 	const updateTimer = () => {
 		timerStatus -= 1;
 		timerFontSize += 1.5;
-		explosionSound.pause();
-		explosionSound.currentTime = 0;
+		soundTimeElapsed.pause();
+		soundTimeElapsed.currentTime = 0;
 		if (timerStatus == 0 && canTrigger) {
-			explosionSound.play();
+			soundTimeElapsed.play();
 			timeElapsed();
 		} else {
-			bipSound.play();
+			soundBip.play();
 		}
 	}
 
 	const gamefinished = () => {
-		victorySound.play();
+		soundEndGame.play();
 		window.clearInterval(timerInterval);
 		showFinalScore = true;
 		currentState = false;
