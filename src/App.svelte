@@ -180,9 +180,7 @@
 <svelte:window on:keydown={handleKeydown}/>
 
 <main>
-
-	{colors.fr}
-
+	
 	{#if !languageSelected}
 		<Header />
 		<LanguageSelector 
@@ -258,59 +256,3 @@
 		{/if}
 	{/if}
 </main>
-
-<style>
-	main {
-		text-align: center;
-		display: flex;
-		flex-direction: column;
-		justify-content: center;
-		align-items: center;
-		max-width: 80%;
-		margin: 0 auto;
-		padding: 1em;
-	}
-	
-	.instructions {
-		font-size: 2rem;
-	}
-	.instructions strong {
-		font-size: 85%;
-	}
-	.game-status {
-		display:flex;
-		flex-wrap: wrap;
-		justify-content: space-between;
-		width:100%;
-		margin-top:20px;
-		font-size: 3rem;
-	}
-	.timer-status {
-		position:absolute;
-		left:50%;
-		transform:translateX(-50%);
-		font-size: var(--timerFontSize);
-	}
-	.game-alert {
-		position: absolute;
-		top: 0;
-		right: 0;
-		bottom: 0;
-		left: 0;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		margin: 0;
-		padding: 0;
-		font-size: 9rem;
-		font-weight: bold;
-		line-height: 1;
-		background:rgba(173, 227, 224, 0.8);
-		color: #951b81;
-		z-index: 2;
-	}
-	.game-alert p {
-		width: 100%;
-		margin:0 auto;
-	}
-</style>
