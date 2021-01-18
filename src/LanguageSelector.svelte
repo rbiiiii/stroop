@@ -1,8 +1,6 @@
 <script>
     import { createEventDispatcher } from 'svelte';
 
-    export let currentLang;
-
     const keyCodes = [65, 90, 69, 82] // A, Z, E, R
     const dispatch = createEventDispatcher();
 

@@ -180,11 +180,10 @@
 <svelte:window on:keydown={handleKeydown}/>
 
 <main>
-	
+
 	{#if !languageSelected}
 		<Header />
-		<LanguageSelector 
-			{currentLang}
+		<LanguageSelector
 			on:languageSelection={updateCurrentLang}
 		/>
 	{/if}
