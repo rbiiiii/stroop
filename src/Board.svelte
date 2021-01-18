@@ -5,7 +5,7 @@
 
     export let scoreOne;
     export let scoreTwo;
-    export let colors;
+    export let currentColors;
     export let round;
     export let canTrigger;
     export let shuffleArray;
@@ -17,9 +17,9 @@
     let soundPositive = new Audio('./mp3/response-positive.mp3');
     let soundNegative = new Audio('./mp3/response-negative.mp3');
 
-    $: randomColors = colors.slice(0, 4);
+    $: randomColors = currentColors.slice(0, 4);
     $: randomColorsOne = shuffleArray(randomColors);
-    $: randomColorsTwo = colors.slice(0, 4);
+    $: randomColorsTwo = currentColors.slice(0, 4);
 
     const handleKeydown = (e) => {
         let keyCode = e.keyCode;

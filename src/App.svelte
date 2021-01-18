@@ -1,27 +1,35 @@
 <script>
 	import Board from "./Board.svelte";
+	import FinalScore from "./FinalScore.svelte";
+	import Header from "./Header.svelte";
+	import LanguageSelector from "./LanguageSelector.svelte";
 	import {fade, fly} from "svelte/transition";
 
 	export let colors;
+	export let translations;
 
+	let languageSelected = false;
+	let currentLang = "fr";
+	let currentColors = null;
 	let currentState = false;
 	let canTrigger = false;
 	let scoreOne = 0;
 	let scoreTwo = 0;
 	let round = 0;
-  	const maxRound = 20;
 	let response = false;
 	let key = '';
 	let keyCode = '';
-  	let timerActivated = true;
-	const timerMaxTime = 4;
+	let timerActivated = true;
 	let timerStatus = timerMaxTime;
 	let timerInterval = null;
-	const timerInitialFontSize = 3;
 	let timerFontSize = timerInitialFontSize;
 	let showTimeElapsedAlert = false;
 	let showFinalScore = false;
 	let showResponse = false;
+
+	const maxRound = 20;
+	const timerMaxTime = 4;
+	const timerInitialFontSize = 3;
 	const body = document.body;
 	const soundBip = new Audio('./mp3/beep.mp3');
 	const soundTimeElapsed = new Audio('./mp3/time-elapsed.mp3');
@@ -49,6 +57,15 @@
 		return array;
 	}
 
+	const getTranslationText = (text) => {
+		return translations[currentLang][text];
+	}
+
+	const updateCurrentLang = function(e) {
+		currentLang = e.detail.currentLang;
+		if (!languageSelected) {languageSelected = true}
+	}
+
     const startGame = () => {
 		canTrigger = true;
 		soundEndGame.pause();
@@ -71,7 +88,7 @@
 
 	const restartGame = () => {
 		showFinalScore = false;
-		colors = shuffleArray(colors);
+		currentColors = shuffleArray(colors[currentLang]);
 		timerStatus = timerMaxTime;
 		timerFontSize = timerInitialFontSize;
 		window.clearInterval(timerInterval);
@@ -150,6 +167,13 @@
 				startGame();
 			}
 		}
+
+		// BACKSPACE
+		if (keyCode == 8) {
+			gamefinished();
+			restartGame();
+			languageSelected = false;
+		}
 	}
 </script>
 
@@ -157,101 +181,82 @@
 
 <main>
 
-	{#if !currentState}
-		<h1>
-			<img src="img/title.svg" alt="">
-			<span>E</span>
-			<span>f</span>
-			<span>f</span>
-			<span>e</span>
-			<span>t</span> 
-			<span class="new-word">S</span>
-			<span>t</span>
-			<span>r</span>
-			<span>o</span>
-			<span>o</span>
-			<span>p</span>
-		</h1>
+	{colors.fr}
+
+	{#if !languageSelected}
+		<Header />
+		<LanguageSelector 
+			{currentLang}
+			on:languageSelection={updateCurrentLang}
+		/>
 	{/if}
 
-	{#if showFinalScore}
-		<div
-			class="final-score"
-			in:fly="{{ y: 20, duration: 300 }}">
-				{#if scoreOne > scoreTwo}
-					<h2>Joueur 1 gagne !</h2>
-					<h2>Score final : <strong>{scoreOne} - {scoreTwo}</strong></h2>
-					{:else}
-					{#if scoreOne == scoreTwo}
-						<h2>Egalité !</h2>
-						<h2>Score final : <strong>{scoreOne} - {scoreTwo}</strong></h2>
-					{:else}
-						{#if scoreOne < scoreTwo}
-							<h2>Joueur 2 gagne !</h2>
-							<h2>Score final : <strong>{scoreOne} - {scoreTwo}</strong></h2>
-						{/if}
-					{/if}
-				{/if}
-		</div>
-	{/if}
+	{#if languageSelected}
+		{#if !currentState}
+			<Header />
+		{/if}
 
-	{#if !currentState}
-		<div class="instructions">
-			<p>Appuyez sur <code>ENTER</code> pour démarrer le jeu</p>
-			<p>ensuite utilisez les touches :<br>
-			<code>A</code>, <code>Z</code>, <code>E</code>, <code>R</code> <strong>(joueur 1)</strong><br>
-			<code>U</code>, <code>I</code>, <code>O</code>, <code>P</code> <strong>(joueur 2)</strong><br>
-			pour choisir la bonne couleur.</p>
-		</div>
-	{/if}
-
-	{#if showResponse}
-		<div class="show-response game-alert">
-			<div
-			  	in:fly="{{ y: 20, duration: 300 }}" 
-  				out:fly="{{ y: 20, duration: 150 }}">
-					<p>{response ? "Correct !" : "Faux !"}</p>
-			</div>
-		</div>
-	{/if}
-
-	{#if showTimeElapsedAlert}
-	<div class="show-time-elapsed game-alert">
-		<div
-			in:fly="{{ y: 40, duration: 300 }}" 
-			out:fly="{{ y: 40, duration: 150 }}">
-			<p>Dommage,<br>votre temps est écoulé !</p>
-		</div>
-	</div>
-	{/if}
-	
-	{#if currentState}
-		<div class="game-status"
-		in:fly="{{ y: 20, duration: 300 }}" 
-		out:fly="{{ y: 0, duration: 0 }}">
-			<div class="score">
-				Score<br><strong>{scoreOne}</strong> - <strong>{scoreTwo}</strong><br>
-			</div>
-			<div class="timer">
-				Temps restant<br><strong class="timer-status">{timerStatus}</strong>	
-			</div>
-			<div class="round">
-				Partie<br><strong>{round} / {maxRound}</strong><br>
-			</div>
-		</div>
-		<div transition:fade>
-			<Board
-				{colors}
+		{#if showFinalScore}
+			<FinalScore 
 				{scoreOne}
 				{scoreTwo}
-				{round}
-				{canTrigger}
-				{shuffleArray}
-				on:colorBlockClicked={updateGameStatus}
 			/>
-		</div>
-	{/if}
+		{/if}
 
+		{#if !currentState}
+			<div class="instructions">
+				{@html getTranslationText("startGame")}
+				{@html getTranslationText("instructions")}
+			</div>
+		{/if}
+
+		{#if showResponse}
+			<div class="show-response game-alert">
+				<div
+					in:fly="{{ y: 20, duration: 300 }}" 
+					out:fly="{{ y: 20, duration: 150 }}">
+						<p>{response ? getTranslationText("true") : getTranslationText("false")}</p>
+				</div>
+			</div>
+		{/if}
+
+		{#if showTimeElapsedAlert}
+		<div class="show-time-elapsed game-alert">
+			<div
+				in:fly="{{ y: 40, duration: 300 }}" 
+				out:fly="{{ y: 40, duration: 150 }}">
+				<p>Dommage,<br>votre temps est écoulé !</p>
+			</div>
+		</div>
+		{/if}
+
+		{#if currentState}
+			<div class="game-status"
+			in:fly="{{ y: 20, duration: 300 }}" 
+			out:fly="{{ y: 0, duration: 0 }}">
+				<div class="score">
+					Score<br><strong>{scoreOne}</strong> - <strong>{scoreTwo}</strong><br>
+				</div>
+				<div class="timer">
+					Temps restant<br><strong class="timer-status">{timerStatus}</strong>	
+				</div>
+				<div class="round">
+					Partie<br><strong>{round} / {maxRound}</strong><br>
+				</div>
+			</div>
+			<div transition:fade>
+				<Board
+					{currentColors}
+					{scoreOne}
+					{scoreTwo}
+					{round}
+					{canTrigger}
+					{shuffleArray}
+					on:colorBlockClicked={updateGameStatus}
+				/>
+			</div>
+		{/if}
+	{/if}
 </main>
 
 <style>
@@ -265,69 +270,7 @@
 		margin: 0 auto;
 		padding: 1em;
 	}
-	h1 {
-		text-align: center;
-	}
-	h1 span {
-		display:inline-block;
-		font-size: 6rem;
-		color:white;
-		font-weight: bold;
-		animation: letter-anim 2.4s ease-out infinite;
-		--letter-anim-duration : 0.1s;
-	}
-	h1 span:nth-of-type(1) {
-		animation-delay: calc(1 * var(--letter-anim-duration));
-	}
-	h1 span:nth-of-type(2) {
-		animation-delay: calc(2 * var(--letter-anim-duration));
-		color:rgba(255,255,255,0.94);
-	}
-	h1 span:nth-of-type(3) {
-		animation-delay: calc(3 * var(--letter-anim-duration));
-		color:rgba(255,255,255,0.88);
-	}
-	h1 span:nth-of-type(4) {
-		animation-delay: calc(4 * var(--letter-anim-duration));
-		color:rgba(255,255,255,0.82);
-	}
-	h1 span:nth-of-type(5) {
-		animation-delay: calc(5 * var(--letter-anim-duration));
-		color:rgba(255,255,255,0.76);
-	}
-	h1 span:nth-of-type(6) {
-		animation-delay: calc(6 * var(--letter-anim-duration));
-		color:rgba(255,255,255,0.94);
-	}
-	h1 span:nth-of-type(7) {
-		animation-delay: calc(7 * var(--letter-anim-duration));
-		color:rgba(255,255,255,0.88);
-	}
-	h1 span:nth-of-type(8) {
-		animation-delay: calc(8 * var(--letter-anim-duration));
-		color:rgba(255,255,255,0.82);
-	}
-	h1 span:nth-of-type(9) {
-		animation-delay: calc(9 * var(--letter-anim-duration));
-		color:rgba(255,255,255,0.76);
-	}
-	h1 span:nth-of-type(10) {
-		animation-delay: calc(10 * var(--letter-anim-duration));
-		color:rgba(255, 255, 255, 0.7);
-	}
-	h1 span:nth-of-type(11) {
-		animation-delay: calc(11 * var(--letter-anim-duration));
-		color:rgba(255,255,255,0.64);
-	}
-	h1 .new-word {
-		margin-left:0.25em;
-	}
-	h1 img {
-		display:block;
-		width:490px;
-		height:auto;
-		margin:10px auto;
-	}
+	
 	.instructions {
 		font-size: 2rem;
 	}
@@ -369,42 +312,5 @@
 	.game-alert p {
 		width: 100%;
 		margin:0 auto;
-	}
-	.final-score {
-		font-size:3rem;
-		color:white;
-	}
-	.final-score h2 {
-		margin:0;
-	}
-	code {
-		display:inline-block;
-		padding:0.15em 0.5em;
-		background:white;
-		border:2px solid var(--green);
-		transform: translateY(-0.25em);
-		margin: 0 0.5em;
-		font-weight: normal;
-		font-size: 1.4rem;
-		border:1px solid gray;
-		box-shadow:1px 0 1px 0 #eee, 0 2px 0 2px #ccc, 0 2px 0 3px #444;
-		-webkit-border-radius:3px;
-		-moz-border-radius:3px;
-		border-radius:3px;
-		margin:2px 3px;
-		padding:1px 5px;
-	}
-
-	@keyframes scoreUp{
-		0%   { transform:scale(1); }
-		70%  { transform:scale(1.3); }
-		100% { transform:translateY(0px); }
-	}
-
-	@keyframes letter-anim {
-		0%   { transform:translateY(0px); }
-		10%  { transform:translateY(-5px); }
-		20% { transform:translateY(0px); }
-		100% { transform:translateY(0px); }
 	}
 </style>
