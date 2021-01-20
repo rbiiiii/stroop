@@ -26,10 +26,10 @@
 <div class="instructions">
     <h2>Choose your language :</h2>
     <ul>
-        <li><code>FR</code></li>
-        <li><code>NL</code></li>
-        <li><code>DE</code></li>
-        <li><code>EN</code></li>
+        <li><button>FR</button><br>A</li>
+        <li><button>NL</button><br>B</li>
+        <li><button>DE</button><br>C</li>
+        <li><button>EN</button><br>D</li>
     </ul>
 </div>
 
@@ -47,8 +47,5 @@
     li {
         list-style:none;
         margin:10px;
-    }
-    code {
-        padding:0.5em;
     }
 </style>

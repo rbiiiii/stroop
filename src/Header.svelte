@@ -17,6 +17,7 @@
 <style>
     h1 {
 		text-align: center;
+		margin-bottom:0;
 	}
 	h1 span {
 		display:inline-block;
@@ -51,27 +52,27 @@
 	}
 	h1 span:nth-of-type(7) {
 		animation-delay: calc(7 * var(--letter-anim-duration));
-		color:rgba(255,255,255,0.94);
+		color:white;
 	}
 	h1 span:nth-of-type(8) {
 		animation-delay: calc(8 * var(--letter-anim-duration));
-		color:rgba(255,255,255,0.88);
+		color:rgba(255,255,255,0.94);
 	}
 	h1 span:nth-of-type(9) {
 		animation-delay: calc(9 * var(--letter-anim-duration));
-		color:rgba(255,255,255,0.82);
+		color:rgba(255,255,255,0.88);
 	}
 	h1 span:nth-of-type(10) {
 		animation-delay: calc(10 * var(--letter-anim-duration));
-		color:rgba(255, 255, 255, 0.76);
+		color:rgba(255, 255, 255, 0.82);
 	}
 	h1 span:nth-of-type(11) {
 		animation-delay: calc(11 * var(--letter-anim-duration));
-		color:rgba(255,255,255,0.70);
+		color:rgba(255,255,255,0.76);
     }
     h1 span:nth-of-type(12) {
 		animation-delay: calc(12 * var(--letter-anim-duration));
-		color:rgba(255,255,255,0.64);
+		color:rgba(255,255,255,0.70);
 	}
 	h1 .new-word {
 		margin-left:0.25em;

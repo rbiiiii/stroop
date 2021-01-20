@@ -1,6 +1,8 @@
 <script>
     import MainColorBlock from "./MainColorBlock.svelte";
     import ColorBlock from "./ColorBlock.svelte";
+
+    import { shuffleArray } from './Utils.svelte';
     import { createEventDispatcher } from 'svelte';
 
     export let scoreOne;
@@ -8,7 +10,6 @@
     export let currentColors;
     export let round;
     export let canTrigger;
-    export let shuffleArray;
 
     const dispatch = createEventDispatcher();
     const keyCodesOne = [65, 90, 69, 82] // A, Z, E, R

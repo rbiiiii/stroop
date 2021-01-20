@@ -1,8 +1,12 @@
 <script>
 	import Board from "./Board.svelte";
 	import FinalScore from "./FinalScore.svelte";
+	import GameStatus from "./GameStatus.svelte";
 	import Header from "./Header.svelte";
 	import LanguageSelector from "./LanguageSelector.svelte";
+	import TimeElapsedAlert from "./TimeElapsedAlert.svelte";
+
+	import { shuffleArray, openFullscreen } from './Utils.svelte';
 	import {fade, fly} from "svelte/transition";
 
 	export let colors;
@@ -37,26 +41,6 @@
 
 	$: document.documentElement.style.setProperty('--timerFontSize', timerFontSize + 'rem');
 	
-	const openFullscreen = (dom) => {
-		if (dom.requestFullscreen) {
-			dom.requestFullscreen();
-		} else if (dom.mozRequestFullScreen) { /* Firefox */
-			dom.mozRequestFullScreen();
-		} else if (dom.webkitRequestFullscreen) { /* Chrome, Safari and Opera */
-			dom.webkitRequestFullscreen();
-		} else if (dom.msRequestFullscreen) { /* IE/Edge */
-			dom.msRequestFullscreen();
-		}
-	}
-	
-	const shuffleArray = (array) => {
-		for (let i = array.length - 1; i > 0; i--) {
-			const j = Math.floor(Math.random() * (i + 1));
-			[array[i], array[j]] = [array[j], array[i]];
-		}
-		return array;
-	}
-
 	const getTranslationText = (text) => {
 		return translations[currentLang][text];
 	}
@@ -127,8 +111,8 @@
 		}
 	}
 
-	const gamefinished = () => {
-		soundEndGame.play();
+	const gamefinished = (isSound) => {
+		if (isSound) {soundEndGame.play()};
 		window.clearInterval(timerInterval);
 		showFinalScore = true;
 		currentState = false;
@@ -160,17 +144,17 @@
 		keyCode = e.keyCode;
 
 		// ENTER
-		if (keyCode == 13) {
+		if (keyCode == 13 && languageSelected) {
 			if (currentState) {
-				gamefinished();
+				gamefinished(true);
 			} else {
 				startGame();
 			}
 		}
 
-		// BACKSPACE
-		if (keyCode == 8) {
-			gamefinished();
+		// L
+		if (keyCode == 76) {
+			gamefinished(false);
 			restartGame();
 			languageSelected = false;
 		}
@@ -218,29 +202,19 @@
 		{/if}
 
 		{#if showTimeElapsedAlert}
-		<div class="show-time-elapsed game-alert">
-			<div
-				in:fly="{{ y: 40, duration: 300 }}" 
-				out:fly="{{ y: 40, duration: 150 }}">
-				<p>Dommage,<br>votre temps est écoulé !</p>
-			</div>
-		</div>
+			<TimeElapsedAlert 
+				{getTranslationText}
+			/>
 		{/if}
 
 		{#if currentState}
-			<div class="game-status"
-			in:fly="{{ y: 20, duration: 300 }}" 
-			out:fly="{{ y: 0, duration: 0 }}">
-				<div class="score">
-					Score<br><strong>{scoreOne}</strong> - <strong>{scoreTwo}</strong><br>
-				</div>
-				<div class="timer">
-					Temps restant<br><strong class="timer-status">{timerStatus}</strong>	
-				</div>
-				<div class="round">
-					Partie<br><strong>{round} / {maxRound}</strong><br>
-				</div>
-			</div>
+			<GameStatus
+				{scoreOne}
+				{scoreTwo}
+				{round}
+				{maxRound}
+				{timerStatus}
+			/>
 			<div transition:fade>
 				<Board
 					{currentColors}
@@ -248,7 +222,6 @@
 					{scoreTwo}
 					{round}
 					{canTrigger}
-					{shuffleArray}
 					on:colorBlockClicked={updateGameStatus}
 				/>
 			</div>
