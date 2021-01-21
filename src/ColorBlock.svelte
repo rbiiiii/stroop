@@ -8,12 +8,8 @@ export let color;
 
 <style>
 button {
-	width: 9em;
-    height: 9em;
+	width: 6.2em;
+    height: 6.2em;
     margin:1em;
-}
-button:after {
-	width: 7.2em;
-    height: 7.2em;
 }
 </style>

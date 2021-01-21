@@ -13,8 +13,9 @@
 }
 
 :root {
-	--green : #00ab9e;
-	--yellow: #d9e021;
+	--green    : 0, 160, 158;
+	--darkGreen: 0, 107, 98;
+	--yellow   : #d9e021;
 }
 
 html,
@@ -54,23 +55,6 @@ p {
 	margin     : 0.5em 0;
 }
 
-.instructions {
-	font-size: 2rem;
-}
-
-.instructions strong {
-	font-size: 85%;
-}
-
-.game-status {
-	display        : flex;
-	flex-wrap      : wrap;
-	justify-content: space-between;
-	width          : 100%;
-	margin-top     : 20px;
-	font-size      : 3rem;
-}
-
 .timer-status {
 	position : absolute;
 	left     : 50%;
@@ -103,7 +87,7 @@ p {
 	line-height: 1.2;
 }
 
-button {
+/* button {
 	position          : relative;
 	display           : inline-block;
 	width             : 7em;
@@ -146,15 +130,58 @@ button:focus {
 	box-shadow      : inset 0 0.28125em 0 #ac2095, inset 0 -0.28125em 0 #811870, inset 0 0 0 0.28125em #8a1977, inset 0 0 0 0.75em #971c82, inset 0 0 0 0.9em #410c38, inset 0 0 0 1.0588235294em black, inset 0 0 0 1.2em rgba(227, 104, 207, 0.2), inset 0 0 0 1.6363636364em #8a1977, inset 0 3.6em 1.2em #741565, inset 0 0 0.9em 1.5em #56104a, 0 0.45em 0 rgba(0, 0, 0, 0.3);
 	background-color: #8e1a7b;
 	outline         : 0;
+} */
+
+button {
+	position            : relative;
+	display             : inline-block;
+	width               : 5.5em;
+	height              : 5.5em;
+	border              : 0;
+	margin              : 0.5em;
+	outline             : none;
+	background-color    : rgb(var(--green));
+	font-size           : 1.4rem;
+	color               : white;
+	text-transform      : uppercase;
+	text-align          : center;
+	border-radius       : 50%;
+	cursor              : pointer;
+	/*box-shadow        : inset 0 0.28125em 0 rgba(var(--green), 0.9), inset 0 -0.28125em 0 rgb(var(--green)), inset 0 0 0 0.28125em #8a1977, inset 0 0 0 0.75em #971c82, inset 0 0 0 0.9em #410c38, inset 0 0 0 0.9782608696em black, inset 0 0 0 1.2em rgba(227, 104, 207, 0.7), inset 0 0 0 1.6363636364em #971c82, inset 0 3.6em 1.2em #811870, inset 0 0 0.9em 1.5em #6c145d, 0 0.45em 0 rgba(0, 0, 0, 0.3);*/
+	box-shadow          : 0px 3px 2px 0 rgba(var(--green), 0.4);
+	-webkit-transition  : box-shadow 200ms;
+	transition          : box-shadow 200ms;
 }
 
-button:active:after,
-button:focus:after {
-	bottom      : 1.05em;
-	border-width: 0;
-	outline     : 0;
+
+button:before {
+	content                    : '';
+	position                   : absolute;
+	top                        : 10%;
+	left                       : 50%;
+	display                    : block;
+	width                      : 80%;
+	height                     : 80%;
+	border                     : 1px solid rgba(0, 0, 0, 0.1);
+	border-width               : 0 0 0.1em;
+	border-radius              : 50%;
+	-webkit-transition-duration: 200ms;
+	transition-duration        : 200ms;
+	transform                  : translateX(-50%) rotate(180deg);
 }
 
-button::-moz-focus-inner {
-	border: 0;
+button:after {
+	content                    : '';
+	position                   : absolute;
+	bottom                     : 6%;
+	left                       : 50%;
+	display                    : block;
+	width                      : 80%;
+	height                     : 80%;
+	border                     : 1px solid rgba(0, 0, 0, 0.2);
+	border-width               : 0 0 0.4em;
+	border-radius              : 50%;
+	-webkit-transition-duration: 200ms;
+	transition-duration        : 200ms;
+	transform                  : translateX(-50%);
 }

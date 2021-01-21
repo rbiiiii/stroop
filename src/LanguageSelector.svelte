@@ -1,22 +1,32 @@
 <script>
+    import { getKeyCodes } from './Utils.svelte';
     import { createEventDispatcher } from 'svelte';
 
-    const keyCodes = [65, 90, 69, 82] // A, Z, E, R
+    export let soundBlip;
+    export let soundError;
+
+    const keyCodes = getKeyCodes();
+    const keyCodesOne = keyCodes.keyCodesOne;
+    const keyCodesTwo = keyCodes.keyCodesTwo;
+    const allKeyCodes = keyCodesOne.concat(keyCodesTwo);
     const dispatch = createEventDispatcher();
 
     const getLang = (key) => {
-        if (key == keyCodes[0]) {return "fr"}  // A
-        if (key == keyCodes[1]) {return "nl"}  // Z
-        if (key == keyCodes[2]) {return "de"}  // E
-        if (key == keyCodes[3]) {return "en"}  // R
+        if (key == keyCodesOne[0] || key == keyCodesTwo[0] ) {return "fr"}
+        if (key == keyCodesOne[1] || key == keyCodesTwo[1]) {return "nl"}
+        if (key == keyCodesOne[2] || key == keyCodesTwo[2]) {return "de"}
+        if (key == keyCodesOne[3] || key == keyCodesTwo[3]) {return "en"}
     }
 
     const handleKeydown = (e) => {
         let keyCode = e.keyCode;
-        if (keyCodes.includes(keyCode)) {
+        if (allKeyCodes.includes(keyCode)) {
+            soundBlip.play();
             dispatch('languageSelection', {
                 currentLang : getLang(keyCode)
             });
+        } else {
+            soundError.play();
         }
     }
 </script>
@@ -26,10 +36,10 @@
 <div class="instructions">
     <h2>Choose your language :</h2>
     <ul>
-        <li><button>FR</button><br>A</li>
-        <li><button>NL</button><br>B</li>
-        <li><button>DE</button><br>C</li>
-        <li><button>EN</button><br>D</li>
+        <li><button>FR</button><br><span>A</span></li>
+        <li><button>NL</button><br><span>B</span></li>
+        <li><button>DE</button><br><span>C</span></li>
+        <li><button>EN</button><br><span>D</span></li>
     </ul>
 </div>
 
@@ -47,5 +57,8 @@
     li {
         list-style:none;
         margin:10px;
+    }
+    span {
+        font-size:2rem;
     }
 </style>

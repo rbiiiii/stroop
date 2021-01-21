@@ -6,19 +6,31 @@
     export let timerStatus;
     export let round;
     export let maxRound;
+    export let getTranslationText;
 
 </script>
 
-<div class="game-status"
+<section class="game-status"
     in:fly="{{ y: 20, duration: 300 }}" 
     out:fly="{{ y: 0, duration: 0 }}">
         <div class="score">
-            Score<br><strong>{scoreOne}</strong> - <strong>{scoreTwo}</strong><br>
+            {getTranslationText("score")}<br><strong>{scoreOne}</strong> - <strong>{scoreTwo}</strong><br>
         </div>
         <div class="timer">
-            Temps restant<br><strong class="timer-status">{timerStatus}</strong>	
+            {getTranslationText("remainingTime")}<br><strong class="timer-status">{timerStatus}</strong>	
         </div>
         <div class="round">
-            Partie<br><strong>{round} / {maxRound}</strong><br>
+            {getTranslationText("game")}<br><strong>{round} / {maxRound}</strong><br>
         </div>
-</div>
+</section>
+
+<style>
+section {
+	display : flex;
+	flex-wrap : wrap;
+	justify-content: space-between;
+	width : 100%;
+	margin-top : 20px;
+	font-size : 3rem;
+}
+</style>

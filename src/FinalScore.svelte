@@ -3,28 +3,27 @@
 
     export let scoreOne;
     export let scoreTwo;
+    export let getTranslationText;
+
 </script>
 
-<div
+<section
     in:fly="{{ y: 20, duration: 300 }}">
         {#if scoreOne > scoreTwo}
-            <h2>Joueur 1 gagne !</h2>
-            <h2>Score final : <strong>{scoreOne} - {scoreTwo}</strong></h2>
-            {:else}
-            {#if scoreOne == scoreTwo}
-                <h2>Egalité !</h2>
-                <h2>Score final : <strong>{scoreOne} - {scoreTwo}</strong></h2>
-            {:else}
-                {#if scoreOne < scoreTwo}
-                    <h2>Joueur 2 gagne !</h2>
-                    <h2>Score final : <strong>{scoreOne} - {scoreTwo}</strong></h2>
-                {/if}
-            {/if}
+            <h2>{getTranslationText("playerOneWins")}</h2>
         {/if}
-</div>
+        {#if scoreOne == scoreTwo}
+            <h2>{getTranslationText("tieGame")}</h2>
+        {/if}
+        {#if scoreOne < scoreTwo}
+            <h2>{getTranslationText("playerTwoWins")}</h2>
+        {/if}
+        <h2>{getTranslationText("finalScore")} : <strong>{scoreOne} - {scoreTwo}</strong></h2>
+</section>
 
 <style>
-div {
+section {
+    margin:30px auto;
     font-size:3rem;
     color:white;
 }

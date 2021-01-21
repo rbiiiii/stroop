@@ -1,8 +1,8 @@
 <script>
-    import MainColorBlock from "./MainColorBlock.svelte";
     import ColorBlock from "./ColorBlock.svelte";
+    import MainColorBlock from "./MainColorBlock.svelte";
 
-    import { shuffleArray } from './Utils.svelte';
+    import { getKeyCodes, shuffleArray } from './Utils.svelte';
     import { createEventDispatcher } from 'svelte';
 
     export let scoreOne;
@@ -10,11 +10,13 @@
     export let currentColors;
     export let round;
     export let canTrigger;
+    export let getTranslationText;
 
     const dispatch = createEventDispatcher();
-    const keyCodesOne = [65, 90, 69, 82] // A, Z, E, R
-    const keyCodesTwo = [85, 73, 79, 80] // U, I, O, P
-    const keyCodes = keyCodesOne.concat(keyCodesTwo);
+    const keyCodes = getKeyCodes();
+    const keyCodesOne = keyCodes.keyCodesOne;
+    const keyCodesTwo = keyCodes.keyCodesTwo;
+    const allKeyCodes = keyCodesOne.concat(keyCodesTwo);
     let soundPositive = new Audio('./mp3/response-positive.mp3');
     let soundNegative = new Audio('./mp3/response-negative.mp3');
 
@@ -25,7 +27,7 @@
     const handleKeydown = (e) => {
         let keyCode = e.keyCode;
 
-        if (canTrigger && keyCodes.includes(keyCode)) {
+        if (canTrigger && allKeyCodes.includes(keyCode)) {
             checkColorBlock(keyCode);
         }
     }
@@ -85,13 +87,13 @@
 
 <svelte:window on:keydown={handleKeydown}/>
 
-<div class="board">
+<section class="board">
     <MainColorBlock
         {randomColors}
     />
     <div class="color-blocks-container">
         <div class="color-blocks">
-            <h3>Joueur 1</h3>
+            <h3>{getTranslationText("playerOne")}</h3>
             {#each randomColorsOne as color, index (color.id)}
                 <ColorBlock
                     {color}
@@ -99,7 +101,7 @@
             {/each}
         </div>
         <div class="color-blocks">
-            <h3>Joueur 2</h3>
+            <h3>{getTranslationText("playerTwo")}</h3>
             {#each randomColorsTwo as color, index (color.id)}
                 <ColorBlock
                     {color}
@@ -107,7 +109,7 @@
             {/each}
         </div>
     </div>
-</div>
+</section>
 
 <style>
     .board {

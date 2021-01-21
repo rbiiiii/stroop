@@ -3,41 +3,47 @@
 	import FinalScore from "./FinalScore.svelte";
 	import GameStatus from "./GameStatus.svelte";
 	import Header from "./Header.svelte";
+	import Instructions from "./Instructions.svelte";
 	import LanguageSelector from "./LanguageSelector.svelte";
+	import ShowResponse from "./ShowResponse.svelte";
 	import TimeElapsedAlert from "./TimeElapsedAlert.svelte";
 
-	import { shuffleArray, openFullscreen } from './Utils.svelte';
-	import {fade, fly} from "svelte/transition";
+	import { getKeyCodes, openFullscreen, shuffleArray  } from './Utils.svelte';
+	import { fade } from "svelte/transition";
 
 	export let colors;
 	export let translations;
 
-	let languageSelected = false;
 	let currentLang = "fr";
 	let currentColors = null;
 	let currentState = false;
 	let canTrigger = false;
-	let scoreOne = 0;
-	let scoreTwo = 0;
+	let keyCode = '';
+	let languageSelected = false;
 	let round = 0;
 	let response = false;
-	let key = '';
-	let keyCode = '';
+	let scoreOne = 0;
+	let scoreTwo = 0;
+	let showTimeElapsedAlert = false;
+	let showFinalScore = false;
+	let showResponse = false;
 	let timerActivated = true;
 	let timerStatus = timerMaxTime;
 	let timerInterval = null;
 	let timerFontSize = timerInitialFontSize;
-	let showTimeElapsedAlert = false;
-	let showFinalScore = false;
-	let showResponse = false;
 
+	const body = document.body;
+	const keyCodes = getKeyCodes();
+    const keyCodeStartStop = keyCodes.startStop;
+    const keyCodeLang = keyCodes.lang;
 	const maxRound = 20;
+	const soundBeep = new Audio('./mp3/beep.mp3');
+	const soundBlip = new Audio('./mp3/blip.mp3');
+	const soundEndGame = new Audio('./mp3/end-game.mp3');
+	const soundError = new Audio('./mp3/error.mp3');
+	const soundTimeElapsed = new Audio('./mp3/time-elapsed.mp3');
 	const timerMaxTime = 4;
 	const timerInitialFontSize = 3;
-	const body = document.body;
-	const soundBip = new Audio('./mp3/beep.mp3');
-	const soundTimeElapsed = new Audio('./mp3/time-elapsed.mp3');
-	const soundEndGame = new Audio('./mp3/end-game.mp3');
 
 	$: document.documentElement.style.setProperty('--timerFontSize', timerFontSize + 'rem');
 	
@@ -76,9 +82,8 @@
 		timerStatus = timerMaxTime;
 		timerFontSize = timerInitialFontSize;
 		window.clearInterval(timerInterval);
-		if (currentState) {
-			showFinalScore = false;
-			if (timerActivated) {timerInterval = setInterval(updateTimer, 1000);}
+		if (currentState && timerActivated) {
+			timerInterval = setInterval(updateTimer, 1000);
 		}
 	}
 
@@ -107,7 +112,7 @@
 			soundTimeElapsed.play();
 			timeElapsed();
 		} else {
-			soundBip.play();
+			soundBeep.play();
 		}
 	}
 
@@ -116,6 +121,7 @@
 		window.clearInterval(timerInterval);
 		showFinalScore = true;
 		currentState = false;
+		canTrigger = false;
 	}
 	
 	const updateGameStatus = function(e) {
@@ -123,7 +129,7 @@
 		scoreTwo = e.detail.scoreTwo;
 		round = e.detail.round;
 		response = e.detail.response;
-		canTrigger = e.canTrigger;
+		canTrigger = e.detail.canTrigger;
 		showResponse = true;
 		timerFontSize = timerInitialFontSize;
 
@@ -140,23 +146,22 @@
 	}
 
 	const handleKeydown = (e) => {
-		key = e.key;
 		keyCode = e.keyCode;
 
-		// ENTER
-		if (keyCode == 13 && languageSelected) {
+		if (keyCode == keyCodeStartStop && languageSelected) {
 			if (currentState) {
 				gamefinished(true);
 			} else {
+				soundBlip.play();
 				startGame();
 			}
 		}
-
-		// L
-		if (keyCode == 76) {
+		
+		if (keyCode == keyCodeLang) {
+			soundBlip.play();
+			languageSelected = false;
 			gamefinished(false);
 			restartGame();
-			languageSelected = false;
 		}
 	}
 </script>
@@ -168,6 +173,8 @@
 	{#if !languageSelected}
 		<Header />
 		<LanguageSelector
+			{soundBlip}
+			{soundError}
 			on:languageSelection={updateCurrentLang}
 		/>
 	{/if}
@@ -181,24 +188,21 @@
 			<FinalScore 
 				{scoreOne}
 				{scoreTwo}
+				{getTranslationText}
 			/>
 		{/if}
 
 		{#if !currentState}
-			<div class="instructions">
-				{@html getTranslationText("startGame")}
-				{@html getTranslationText("instructions")}
-			</div>
+			<Instructions 
+				{getTranslationText}
+			/>
 		{/if}
 
 		{#if showResponse}
-			<div class="show-response game-alert">
-				<div
-					in:fly="{{ y: 20, duration: 300 }}" 
-					out:fly="{{ y: 20, duration: 150 }}">
-						<p>{response ? getTranslationText("true") : getTranslationText("false")}</p>
-				</div>
-			</div>
+			<ShowResponse 
+				{response}
+				{getTranslationText}
+			/>
 		{/if}
 
 		{#if showTimeElapsedAlert}
@@ -214,6 +218,7 @@
 				{round}
 				{maxRound}
 				{timerStatus}
+				{getTranslationText}
 			/>
 			<div transition:fade>
 				<Board
@@ -222,6 +227,7 @@
 					{scoreTwo}
 					{round}
 					{canTrigger}
+					{getTranslationText}
 					on:colorBlockClicked={updateGameStatus}
 				/>
 			</div>
