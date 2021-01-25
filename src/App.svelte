@@ -98,7 +98,7 @@
 				round += 1;
 				restartGame();
 			} else {
-				gamefinished();
+				gamefinished(true);
 			}
 		}, 700);
 	}
@@ -135,7 +135,7 @@
 
 		if (round > maxRound) {
 			showResponse = false;
-			gamefinished();
+			gamefinished(true);
 		} else {
 			setTimeout(function(){ 
 				showResponse = false;
