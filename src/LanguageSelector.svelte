@@ -12,7 +12,7 @@
     const dispatch = createEventDispatcher();
 
     const getLang = (key) => {
-        if (key == keyCodesOne[0] || key == keyCodesTwo[0] ) {return "fr"}
+        if (key == keyCodesOne[0] || key == keyCodesTwo[0]) {return "fr"}
         if (key == keyCodesOne[1] || key == keyCodesTwo[1]) {return "nl"}
         if (key == keyCodesOne[2] || key == keyCodesTwo[2]) {return "de"}
         if (key == keyCodesOne[3] || key == keyCodesTwo[3]) {return "en"}
