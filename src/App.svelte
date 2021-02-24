@@ -34,8 +34,8 @@
 
 	const body = document.body;
 	const keyCodes = getKeyCodes();
-    const keyCodeStartStop = keyCodes.startStop;
-    const keyCodeLang = keyCodes.lang;
+  const keyCodeStartStop = keyCodes.startStop;
+  const keyCodeLang = keyCodes.lang;
 	const maxRound = 20;
 	const soundBeep = new Audio('./mp3/beep.mp3');
 	const soundBlip = new Audio('./mp3/blip.mp3');
